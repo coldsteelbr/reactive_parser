@@ -2,6 +2,7 @@ package ru.romanbrazhnikov;
 
 import ru.romanbrazhnikov.parser.ICommonParser;
 import ru.romanbrazhnikov.parser.RegExParser;
+import ru.romanbrazhnikov.parser.SourceSuccessConsumer;
 import ru.romanbrazhnikov.sourceprovider.SourceProvider;
 
 import java.util.ArrayList;
@@ -26,23 +27,12 @@ public class Tester {
 
         while (provider.hasMore()) {
 
+            // TODO: request parser here
             provider.requestNext()
                     .timeout(10, TimeUnit.SECONDS)
                     .subscribe(
-                            s -> {
-                                // TODO: request parser from a parser pool
-                                parser.setSource(s);
-                                parser.parse().subscribe(parseResult -> {
-                                    List<Map<String, String>> res = parseResult.getResult();
-                                    System.out.println("Page:");
-                                    for (Map<String, String> curRow : res) {
-                                        for (Map.Entry entry : curRow.entrySet()) {
-                                            System.out.print(entry + " ");
-                                        }
-                                        System.out.println();
-                                    }
-                                }, System.out::println);
-                            }, System.out::println);
+                            new SourceSuccessConsumer(parser),
+                            System.out::println);
 
         }
     }
