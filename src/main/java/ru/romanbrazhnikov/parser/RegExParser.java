@@ -19,8 +19,6 @@ public class RegExParser implements ICommonParser {
     private List<String> mGroupNames;
     private long mDelayInMillis;
 
-    private Single rxParser;
-
     private Pattern mPattern;
 
     private ParseResult mResultTable = new ParseResult();

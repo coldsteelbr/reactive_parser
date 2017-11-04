@@ -1,29 +1,21 @@
 package ru.romanbrazhnikov.parser;
 
 import io.reactivex.functions.Consumer;
+import ru.romanbrazhnikov.resultsaver.ICommonSaver;
 
-import java.util.List;
-import java.util.Map;
-
-public class SourceSuccessConsumer implements Consumer<String>{
+public class SourceSuccessConsumer implements Consumer<String> {
 
     private final ICommonParser mParser;
-    public SourceSuccessConsumer(ICommonParser parser){
+    private final ICommonSaver mSaver;
+
+    public SourceSuccessConsumer(ICommonParser parser, ICommonSaver saver) {
         mParser = parser;
+        mSaver = saver;
     }
 
     @Override
     public void accept(String source) throws Exception {
         mParser.setSource(source);
-        mParser.parse().subscribe(parseResult -> {
-            List<Map<String, String>> res = parseResult.getResult();
-            System.out.println("Page:");
-            for (Map<String, String> curRow : res) {
-                for (Map.Entry entry : curRow.entrySet()) {
-                    System.out.print(entry + " ");
-                }
-                System.out.println();
-            }
-        }, System.out::println);
+        mParser.parse().subscribe(mSaver::save, System.out::println);
     }
 }

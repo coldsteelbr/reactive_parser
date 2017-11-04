@@ -3,6 +3,8 @@ package ru.romanbrazhnikov;
 import ru.romanbrazhnikov.parser.ICommonParser;
 import ru.romanbrazhnikov.parser.RegExParser;
 import ru.romanbrazhnikov.parser.SourceSuccessConsumer;
+import ru.romanbrazhnikov.resultsaver.DummySaver;
+import ru.romanbrazhnikov.resultsaver.ICommonSaver;
 import ru.romanbrazhnikov.sourceprovider.SourceProvider;
 
 import java.util.ArrayList;
@@ -19,6 +21,8 @@ public class Tester {
         names.add("LEFT");
         names.add("RIGHT");
 
+        ICommonSaver saver = new DummySaver();
+
         ICommonParser parser = new RegExParser();
         parser.setPattern(pattern);
         parser.setMatchNames(names);
@@ -31,7 +35,7 @@ public class Tester {
             provider.requestNext()
                     .timeout(10, TimeUnit.SECONDS)
                     .subscribe(
-                            new SourceSuccessConsumer(parser),
+                            new SourceSuccessConsumer(parser, saver),
                             System.out::println);
 
         }
