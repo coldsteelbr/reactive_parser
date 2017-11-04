@@ -1,14 +1,16 @@
 package ru.romanbrazhnikov.parser;
 
 import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
+
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class RegExParser implements ICommonParser {
 
@@ -21,7 +23,7 @@ public class RegExParser implements ICommonParser {
 
     private Pattern mPattern;
 
-    private List<Map<String, String>> mResultTable = new ArrayList<>();
+    private ParseResult mResultTable = new ParseResult();
 
 
     public RegExParser() {
@@ -36,6 +38,10 @@ public class RegExParser implements ICommonParser {
     @Override
     public void setPattern(String pattern) {
         mPatternRegEx = pattern;
+        mPattern = Pattern.compile(mPatternRegEx,
+                Pattern.CASE_INSENSITIVE | // A=a, B=b...
+                        Pattern.UNICODE_CASE | // UNICODE mode on
+                        Pattern.COMMENTS); // Comments and whitespaces permitted
     }
 
     @Override
@@ -43,40 +49,40 @@ public class RegExParser implements ICommonParser {
         mGroupNames = names;
     }
 
+    private Single<ParseResult> getResult(){
+        return Single.create(emitter -> {
+
+            Matcher m = mPattern.matcher(mSource);
+            mResultTable.clear();
+            // TODO: REMOVE SLEEPING
+            SECONDS.sleep(3);
+
+            while (m.find()) {
+                Map<String, String> currentResultRow = new HashMap<>();
+                for (String currentName : mGroupNames) {
+                    currentResultRow.put(currentName, m.group(currentName));
+                }
+                mResultTable.addRow(currentResultRow);
+            }
+
+            emitter.onSuccess(mResultTable);
+
+        });
+    }
+
     @Override
-    public boolean run() {
+    public Single<ParseResult> parse() {
 
-        try {
-            mPattern = Pattern.compile(mPatternRegEx,
-                    Pattern.CASE_INSENSITIVE | // A=a, B=b...
-                            Pattern.UNICODE_CASE | // UNICODE mode on
-                            Pattern.COMMENTS); // Comments and whitespaces permitted
-        } catch (PatternSyntaxException e) {
-            // TODO: set error
-            return false;
-        }
+        if(mGroupNames == null)
+            return Single.error(new Exception("Matching names are not set"));
 
-        // MULTITHREADING GOES HERE
-        Matcher m = mPattern.matcher(mSource);
+        if(mGroupNames.size() == 0)
+            return Single.error(new Exception("Matching names count is 0 (zero)"));
 
-        while (m.find()) {
-            int gCount = m.groupCount();
-            System.out.println(gCount);
-            Map<String, String> currentResultRow = new HashMap<>();
-            for (String currentName : mGroupNames) {
-                currentResultRow.put(currentName, m.group(currentName));
-            }
-            mResultTable.add(currentResultRow);
-        }
-        return true;
+
+        return getResult();
+
     }
 
-    public void logger() {
-        for (Map<String, String> curRow : mResultTable) {
-            for (Map.Entry<String, String> currentResult : curRow.entrySet()) {
-                System.out.print(currentResult.getKey() + ":" + currentResult.getValue() + " ");
-            }
-            System.out.println();
-        }
-    }
+
 }

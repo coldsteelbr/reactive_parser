@@ -1,5 +1,7 @@
 package ru.romanbrazhnikov.parser;
 
+import io.reactivex.Single;
+
 import java.util.List;
 
 public interface ICommonParser {
@@ -9,5 +11,5 @@ public interface ICommonParser {
 
     void setMatchNames(List<String> names);
 
-    boolean run();
+    Single<ParseResult> parse();
 }
