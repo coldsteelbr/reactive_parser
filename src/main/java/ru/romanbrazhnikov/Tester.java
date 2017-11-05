@@ -3,13 +3,13 @@ package ru.romanbrazhnikov;
 import ru.romanbrazhnikov.parser.ICommonParser;
 import ru.romanbrazhnikov.parser.RegExParser;
 import ru.romanbrazhnikov.parser.SourceSuccessConsumer;
+import ru.romanbrazhnikov.repository.SimpleRepository;
 import ru.romanbrazhnikov.resultsaver.DummySaver;
+import ru.romanbrazhnikov.resultsaver.FileSaver;
 import ru.romanbrazhnikov.resultsaver.ICommonSaver;
-import ru.romanbrazhnikov.sourceprovider.SourceProvider;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class Tester {
@@ -22,20 +22,21 @@ public class Tester {
         names.add("RIGHT");
 
         ICommonSaver saver = new DummySaver();
+        ICommonSaver fileSaver = new FileSaver("dummy_file.txt");
 
         ICommonParser parser = new RegExParser();
         parser.setPattern(pattern);
         parser.setMatchNames(names);
 
-        SourceProvider provider = new SourceProvider();
+        SimpleRepository repository = SimpleRepository.getInstance();
 
-        while (provider.hasMore()) {
+        while (repository.hasMore()) {
 
             // TODO: request parser here
-            provider.requestNext()
+            repository.requestSource(null)
                     .timeout(10, TimeUnit.SECONDS)
                     .subscribe(
-                            new SourceSuccessConsumer(parser, saver),
+                            new SourceSuccessConsumer(parser, fileSaver),
                             System.out::println);
 
         }
