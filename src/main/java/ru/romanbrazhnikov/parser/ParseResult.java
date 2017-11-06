@@ -18,4 +18,8 @@ public class ParseResult {
     public void clear(){
         mResult.clear();
     }
+
+    public boolean isEmpty() {
+        return mResult.size() == 0;
+    }
 }

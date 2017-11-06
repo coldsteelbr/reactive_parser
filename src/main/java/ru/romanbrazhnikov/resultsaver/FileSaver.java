@@ -26,6 +26,7 @@ public class FileSaver implements ICommonSaver {
         Path file = Paths.get(mFileName);
         try {
             Files.write(file, stringToSave.getBytes(), CREATE, APPEND);
+            System.out.println("stringToSave: " + stringToSave);
         } catch (IOException e) {
             e.printStackTrace();
         }

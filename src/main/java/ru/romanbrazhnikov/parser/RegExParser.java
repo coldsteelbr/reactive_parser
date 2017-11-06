@@ -1,8 +1,6 @@
 package ru.romanbrazhnikov.parser;
 
 import io.reactivex.Single;
-import io.reactivex.SingleEmitter;
-import io.reactivex.SingleOnSubscribe;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,12 +8,12 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public class RegExParser implements ICommonParser {
 
-    private String mPatternRegEx;
-    private String mSource;
+    private String mPatternRegEx = null;
+    private String mSource = null;
     private List<String> mGroupNames;
     private long mDelayInMillis;
 
@@ -47,13 +45,14 @@ public class RegExParser implements ICommonParser {
         mGroupNames = names;
     }
 
-    private Single<ParseResult> getResult(){
+    private Single<ParseResult> getResult() {
         return Single.create(emitter -> {
 
             Matcher m = mPattern.matcher(mSource);
             mResultTable.clear();
+
             // TODO: REMOVE SLEEPING
-            SECONDS.sleep(3);
+            MILLISECONDS.sleep(mDelayInMillis);
 
             while (m.find()) {
                 Map<String, String> currentResultRow = new HashMap<>();
@@ -63,6 +62,9 @@ public class RegExParser implements ICommonParser {
                 mResultTable.addRow(currentResultRow);
             }
 
+            if (mResultTable.isEmpty()) {
+                emitter.onError(new Exception("Empty result"));
+            }
             emitter.onSuccess(mResultTable);
 
         });
@@ -71,11 +73,14 @@ public class RegExParser implements ICommonParser {
     @Override
     public Single<ParseResult> parse() {
 
-        if(mGroupNames == null)
+        if (mGroupNames == null)
             return Single.error(new Exception("Matching names are not set"));
 
-        if(mGroupNames.size() == 0)
+        if (mGroupNames.size() == 0)
             return Single.error(new Exception("Matching names count is 0 (zero)"));
+
+        if (mSource == null)
+            return Single.error(new Exception("No source set"));
 
 
         return getResult();
