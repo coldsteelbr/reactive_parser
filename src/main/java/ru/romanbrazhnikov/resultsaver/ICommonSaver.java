@@ -1,7 +1,8 @@
 package ru.romanbrazhnikov.resultsaver;
 
+import io.reactivex.Completable;
 import ru.romanbrazhnikov.parser.ParseResult;
 
 public interface ICommonSaver {
-    void save(ParseResult parseResult);
+    Completable save(ParseResult parseResult);
 }

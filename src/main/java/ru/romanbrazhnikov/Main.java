@@ -10,11 +10,21 @@ public class Main {
         Flowable.just("Starting...").subscribe(System.out::println);
 
 
+        //
+        //  TESTING RegExParser
+        //
         Tester.testRegExParser_ValidInputPrintingResult();
         Tester.testRegExParser_NoSourceSet();
         Tester.testRegExParser_EmptyResult();
         Tester.testRegExParser_NoMatchingNamesSet();
         Tester.testRegExParser_EmptyMatchingNamesSet();
+
+
+        //
+        // TESTING TextFileSaver
+        //
+        Tester.testTextFileResultSaver_ValidResultSaving();
+
 
 
         System.out.println("Hit any key to terminate");

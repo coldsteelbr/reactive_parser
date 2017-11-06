@@ -1,19 +1,22 @@
 package ru.romanbrazhnikov;
 
 import ru.romanbrazhnikov.parser.ICommonParser;
+import ru.romanbrazhnikov.parser.ParseResult;
 import ru.romanbrazhnikov.parser.RegExParser;
 import ru.romanbrazhnikov.parser.SourceSuccessConsumer;
 import ru.romanbrazhnikov.repository.SimpleRepository;
 import ru.romanbrazhnikov.resultsaver.DummySaver;
-import ru.romanbrazhnikov.resultsaver.FileSaver;
+import ru.romanbrazhnikov.resultsaver.TextFileSaver;
 import ru.romanbrazhnikov.resultsaver.ICommonSaver;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class Tester {
+    static final String sValidFileName = "parsed_result";
 
     static final String sValidPattern
             = "<td[^>]*>\\s*(?<LEFT>.*?)\\s*</td>\\s*"
@@ -38,6 +41,21 @@ public class Tester {
     static {
         sValidNames.add("LEFT");
         sValidNames.add("RIGHT");
+    }
+
+    static ParseResult sValidResult = new ParseResult();
+
+    static {
+        Map<String, String> row1 = new HashMap<>();
+        row1.put("G1", "One");
+        row1.put("G2", "Two");
+
+        Map<String, String> row2 = new HashMap<>();
+        row2.put("G1", "Once");
+        row2.put("G2", "Twice");
+
+        sValidResult.addRow(row1);
+        sValidResult.addRow(row2);
     }
 
     public static void testRegExParser_ValidInputPrintingResult() {
@@ -149,6 +167,16 @@ public class Tester {
 
     }
 
+
+    public static void testTextFileResultSaver_ValidResultSaving() {
+        ICommonSaver saver = new TextFileSaver(sValidFileName + ".txt");
+
+        saver.save(sValidResult).subscribe(
+                () -> System.out.println("Saved."),
+                throwable -> System.out.println(throwable.getMessage()));
+    }
+
+    //
     public static void testComplexParser() {
         String pattern = "<td[^>]*>\\s*(?<LEFT>.*?)\\s*</td>\\s*"
                 + "<td[^>]*>\\s*(?<RIGHT>.*?)\\s*</td>\\s*";
@@ -158,7 +186,7 @@ public class Tester {
         names.add("RIGHT");
 
         ICommonSaver saver = new DummySaver();
-        ICommonSaver fileSaver = new FileSaver("dummy_file.txt");
+        ICommonSaver fileSaver = new TextFileSaver("dummy_file.txt");
 
         ICommonParser parser = new RegExParser();
         parser.setPattern(pattern);
