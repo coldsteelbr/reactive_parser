@@ -8,6 +8,7 @@ import ru.romanbrazhnikov.repository.SimpleRepository;
 import ru.romanbrazhnikov.resultsaver.DummySaver;
 import ru.romanbrazhnikov.resultsaver.ICommonSaver;
 import ru.romanbrazhnikov.resultsaver.TextFileSaver;
+import ru.romanbrazhnikov.sourceprovider.HttpMethods;
 import ru.romanbrazhnikov.sourceprovider.HttpSourceProvider;
 
 import java.util.ArrayList;
@@ -194,15 +195,43 @@ public class Tester {
     //
     //  HttpSourceProvider
     //
-    public static void testHttpSourceProvider_ValidConnectAndResponseAsString() {
-        String validUrl = "http://spran.ru/sell/comm.html?currency=1&costMode=1&cities%5B0%5D=21";
-        HttpSourceProvider provider = new HttpSourceProvider(validUrl);
+    public static void testHttpSourceProvider_httpGetRequest() {
+        String baseUrl = "http://spran.ru/sell/comm.html";
+        String queryParams = "currency=1&costMode=1&cities%5B0%5D=21";
+        HttpSourceProvider provider = new HttpSourceProvider(baseUrl, "UTF-8", HttpMethods.GET, queryParams);
+
+        provider.requestSource().subscribe(
+                source -> System.out.println("Source: " + source),
+                System.out::println);
+
+    }
+
+    public static void testHttpSourceProvider_httpPostRequest() {
+        String baseUrl = "";
+        String queryParams = "";
+        HttpSourceProvider provider = new HttpSourceProvider(baseUrl, "UTF-8", HttpMethods.POST, queryParams);
+
+        provider.requestSource().subscribe(
+                source -> System.out.println("Source: " + source),
+                System.out::println);
+    }
+
+    public static void testHttpSourceProvider_printingCookieHeaders() {
+        String baseUrl = "http://spran.ru/sell/comm.html";
+        String queryParams = "currency=1&costMode=1&cities%5B0%5D=21";
+        HttpSourceProvider provider = new HttpSourceProvider(baseUrl, "UTF-8", HttpMethods.GET, queryParams);
 
         provider.requestSource().subscribe(
                 source -> {
-                    System.out.println("Source: " + source);
+                    if (provider.getCookieHeadersFromResponse() != null) {
+                        System.out.println("Cookie headers:");
+                        for (String currentHeader : provider.getCookieHeadersFromResponse()) {
+                            System.out.println(currentHeader);
+                        }
+                    }
                 },
                 System.out::println);
+
     }
 
     //
@@ -234,5 +263,8 @@ public class Tester {
 
         }
     }
+
+
+
 
 }

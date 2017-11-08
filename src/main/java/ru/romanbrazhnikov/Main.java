@@ -28,7 +28,11 @@ public class Main {
         //  TESTING Http connect
         //
 
-        Tester.testHttpSourceProvider_ValidConnectAndResponseAsString();
+        //Tester.testHttpSourceProvider_ValidConnectAndResponseAsString();
+        Tester.testHttpSourceProvider_printingCookieHeaders();
+        Tester.testHttpSourceProvider_httpGetRequest();
+        // TODO: find "post" site
+        //Tester.testHttpSourceProvider_httpPostRequest();
     }
 
     private static void startIncubator() {
