@@ -6,8 +6,9 @@ import ru.romanbrazhnikov.parser.RegExParser;
 import ru.romanbrazhnikov.parser.SourceSuccessConsumer;
 import ru.romanbrazhnikov.repository.SimpleRepository;
 import ru.romanbrazhnikov.resultsaver.DummySaver;
-import ru.romanbrazhnikov.resultsaver.TextFileSaver;
 import ru.romanbrazhnikov.resultsaver.ICommonSaver;
+import ru.romanbrazhnikov.resultsaver.TextFileSaver;
+import ru.romanbrazhnikov.sourceprovider.HttpSourceProvider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Tester {
     static final String sValidFileName = "parsed_result";
+    static final String sInValidFileName = "txt/txt";
 
     static final String sValidPattern
             = "<td[^>]*>\\s*(?<LEFT>.*?)\\s*</td>\\s*"
@@ -58,6 +60,9 @@ public class Tester {
         sValidResult.addRow(row2);
     }
 
+    //
+    //  RegExParser
+    //
     public static void testRegExParser_ValidInputPrintingResult() {
         ICommonParser parser = new RegExParser();
         parser.setPattern(sValidPattern);
@@ -167,13 +172,37 @@ public class Tester {
 
     }
 
-
+    //
+    //  TextFileResultSaver
+    //
     public static void testTextFileResultSaver_ValidResultSaving() {
         ICommonSaver saver = new TextFileSaver(sValidFileName + ".txt");
 
         saver.save(sValidResult).subscribe(
                 () -> System.out.println("Saved."),
                 throwable -> System.out.println(throwable.getMessage()));
+    }
+
+    public static void testTextFileResultSaver_InvalidFileNameResultSaving() {
+        ICommonSaver saver = new TextFileSaver(sInValidFileName + ".txt");
+
+        saver.save(sValidResult).subscribe(
+                () -> System.out.println("Saved."),
+                throwable -> System.out.println(throwable.getMessage()));
+    }
+
+    //
+    //  HttpSourceProvider
+    //
+    public static void testHttpSourceProvider_ValidConnectAndResponseAsString() {
+        String validUrl = "http://spran.ru/sell/comm.html?currency=1&costMode=1&cities%5B0%5D=21";
+        HttpSourceProvider provider = new HttpSourceProvider(validUrl);
+
+        provider.requestSource().subscribe(
+                source -> {
+                    System.out.println("Source: " + source);
+                },
+                System.out::println);
     }
 
     //

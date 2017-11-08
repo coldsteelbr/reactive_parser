@@ -48,7 +48,7 @@ public class TextFileSaver implements ICommonSaver {
             }
             // TODO: Add types of Exception
             catch (Exception ex) {
-                emitter.onError(new Exception("TextFileSaver: save: " + ex.getMessage()));
+                emitter.onError(new Exception("TextFileSaver: save: " + ex));
             }
         });
 

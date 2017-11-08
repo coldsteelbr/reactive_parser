@@ -1,7 +1,7 @@
 package ru.romanbrazhnikov.repository;
 
 import io.reactivex.Single;
-import ru.romanbrazhnikov.sourceprovider.SourceProvider;
+import ru.romanbrazhnikov.sourceprovider.DummySourceProvider;
 
 public class SimpleRepository implements ICommonRepository {
 
@@ -18,7 +18,7 @@ public class SimpleRepository implements ICommonRepository {
     private SimpleRepository() {
     }
 
-    private SourceProvider mProvider = new SourceProvider();
+    private DummySourceProvider mProvider = new DummySourceProvider();
 
     @Override
     public Single<String> requestSource(Request request) {

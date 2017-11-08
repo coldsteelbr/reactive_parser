@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
-public class SourceProvider {
+public class DummySourceProvider {
 
     private Queue<String> mSourceData = new LinkedList<>();
 
@@ -54,7 +54,7 @@ public class SourceProvider {
         return mSourceData.size() > 0;
     }
 
-    public SourceProvider() {
+    public DummySourceProvider() {
         mSourceData.offer(page1);
         mSourceData.offer(page2);
         mSourceData.offer(page3);
