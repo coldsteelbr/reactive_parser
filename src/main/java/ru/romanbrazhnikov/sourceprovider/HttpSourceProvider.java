@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -14,8 +15,12 @@ public class HttpSourceProvider {
     // TODO: Add encoding conversion
     // TODO: from server: ByteBuffer byteBuffer = Charset.forName("UTF-8").encode(myString)
     private String mBaseUrl = "";
-    private List<String> mCookieHeaderList;
+
+    private List<String> mCookiesToRequest;
+    private List<String> mCookiesFromResponse;
+
     private String mClientCharSet;
+    private String mServerEncoding = "utf-8";
     private HttpMethods mHttpMethod;
     private String mQueryParamString;
 
@@ -33,18 +38,21 @@ public class HttpSourceProvider {
                 URL myURL;// = new URL(mBaseUrl);
                 HttpURLConnection httpConnection = null;// = (HttpURLConnection) myURL.openConnection();
 
+
                 // METHOD
                 switch (mHttpMethod) {
 
                     case GET:
                         myURL = new URL(mBaseUrl + "?" + mQueryParamString);
                         httpConnection = (HttpURLConnection) myURL.openConnection();
+                        addCookiesIfAny(httpConnection);
                         break;
                     case POST:
                         myURL = new URL(mBaseUrl);
                         httpConnection = (HttpURLConnection) myURL.openConnection();
                         httpConnection.setDoOutput(true); // Triggers POST.
                         httpConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + mClientCharSet);
+                        addCookiesIfAny(httpConnection);
 
                         // Sending POST form
                         try (OutputStream output = httpConnection.getOutputStream()) {
@@ -59,12 +67,12 @@ public class HttpSourceProvider {
                 // opening input stream from the connection
                 InputStream httpResponse = httpConnection.getInputStream();
 
-                // getting cookies
+                // getting headers
                 Set httpHeaders = httpConnection.getHeaderFields().keySet();
 
-                // cookie headers
+                // getting cookie headers
                 if (httpHeaders.contains("Set-Cookie")) {
-                    mCookieHeaderList = httpConnection.getHeaderFields().get("Set-Cookie");
+                    mCookiesFromResponse = httpConnection.getHeaderFields().get("Set-Cookie");
                 }
 
                 // result html response
@@ -80,22 +88,54 @@ public class HttpSourceProvider {
                     // closing the scanner after reading
                     responseScanner.close();
 
-                    // returning result
+                    // returning result TODO: encoding conversion
+                    //ByteBuffer byteBuffer = (ByteBuffer)Charset.forName(mServerEncoding).encode(responseHtmlBuilder.toString()).limit(Integer.MAX_VALUE);
                     emitter.onSuccess(responseHtmlBuilder.toString());
                 } catch (Exception e) {
-                    emitter.onError(e);
+                    Exception exception = new Exception("HttpSourceProvider (Reading input stream): " + e.getMessage());
+                    exception.setStackTrace(e.getStackTrace());
+                    emitter.onError(exception);
                 } finally {
                     // closing input stream
                     httpResponse.close();
                 }
 
             } catch (Exception ex) {
-                emitter.onError(ex);
+
+                Exception exception = new Exception("HttpSourceProvider (requestSource): " + ex.getMessage());
+                exception.setStackTrace(ex.getStackTrace());
+                emitter.onError(exception);
             }
         });
     }
 
+    private void addCookiesIfAny(HttpURLConnection httpConnection){
+        // Adding cookies if any
+        if (mCookiesToRequest != null) {
+            for (String currentCookie : mCookiesToRequest) {
+                httpConnection.setRequestProperty("Cookie", currentCookie);
+            }
+        }
+    }
+
+    public void setCookiesHeadersToRequest(List<String> cookiesToRequest) {
+        mCookiesToRequest = cookiesToRequest;
+    }
+
+    public void setCustomCookies(List<Cookie> cookieList) {
+        // lazy initialization
+        if (mCookiesToRequest == null) {
+            mCookiesToRequest = new ArrayList<>();
+        }
+
+        // setting cookies
+        for (Cookie currentCookie : cookieList) {
+            mCookiesToRequest.add(currentCookie.getHeader());
+        }
+
+    }
+
     public List<String> getCookieHeadersFromResponse() {
-        return mCookieHeaderList;
+        return mCookiesFromResponse;
     }
 }

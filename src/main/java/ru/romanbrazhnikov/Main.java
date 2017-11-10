@@ -27,12 +27,13 @@ public class Main {
         //
         //  TESTING Http connect
         //
-
-        //Tester.testHttpSourceProvider_ValidConnectAndResponseAsString();
-        Tester.testHttpSourceProvider_printingCookieHeaders();
-        Tester.testHttpSourceProvider_httpGetRequest();
+        //Tester.testHttpSourceProvider_printingCookieHeaders();
+        //Tester.testHttpSourceProvider_httpGetRequest();
         // TODO: find "post" site
         //Tester.testHttpSourceProvider_httpPostRequest();
+
+        Tester.testCookie();
+        Tester.testHttpSourceProvider_settingCookieHeaders();
     }
 
     private static void startIncubator() {
@@ -48,7 +49,7 @@ public class Main {
         //startIncubator();
 
 
-        System.out.println("Hit any key to terminate");
+        System.out.println("Hit {ENTER} key to terminate");
         try {
             System.in.read();
         } catch (IOException e) {

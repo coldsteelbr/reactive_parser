@@ -8,6 +8,7 @@ import ru.romanbrazhnikov.repository.SimpleRepository;
 import ru.romanbrazhnikov.resultsaver.DummySaver;
 import ru.romanbrazhnikov.resultsaver.ICommonSaver;
 import ru.romanbrazhnikov.resultsaver.TextFileSaver;
+import ru.romanbrazhnikov.sourceprovider.Cookie;
 import ru.romanbrazhnikov.sourceprovider.HttpMethods;
 import ru.romanbrazhnikov.sourceprovider.HttpSourceProvider;
 
@@ -234,6 +235,38 @@ public class Tester {
 
     }
 
+    public static void testHttpSourceProvider_settingCookieHeaders() {
+        String baseUrl = "http://prosto.tomsk.ru/";
+        String queryParams = "rm=prosto_offers_list&l_page=2";
+
+        HttpSourceProvider provider = new HttpSourceProvider(baseUrl, "UTF-8", HttpMethods.GET, queryParams);
+        List<Cookie> cookieList = new ArrayList<>();
+        cookieList.add(new Cookie("PHPSESSID", "h5dtutre745mrvgkl6tonc7sc3", null));
+        provider.setCustomCookies(cookieList);
+
+        provider.requestSource().subscribe(
+                source -> {
+                    System.out.println(source);
+
+                    if (provider.getCookieHeadersFromResponse() != null) {
+                        System.out.println("Cookie headers:");
+                        for (String currentHeader : provider.getCookieHeadersFromResponse()) {
+                            System.out.println(currentHeader);
+                        }
+                    }
+                },
+                Throwable::printStackTrace);
+
+    }
+
+
+    // Cookie
+    public static void testCookie(){
+        Cookie cookie = new Cookie("PHPSESSION", "qwe123", ".example.com");
+
+        System.out.println(cookie.getHeader());
+    }
+
     //
     public static void testComplexParser() {
         String pattern = "<td[^>]*>\\s*(?<LEFT>.*?)\\s*</td>\\s*"
@@ -263,8 +296,5 @@ public class Tester {
 
         }
     }
-
-
-
 
 }
