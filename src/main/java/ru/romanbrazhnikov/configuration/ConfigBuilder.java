@@ -198,17 +198,15 @@ public class ConfigBuilder {
 
     }
 
-    private void initMarkers(){
+    private void initMarkers() {
         NodeList markerNodeList = (NodeList) getByXPath(XPATH_MARKERS, XPathConstants.NODESET);
-        if(markerNodeList != null)
-        {
+        if (markerNodeList != null) {
             Markers markers = new Markers();
 
-            for (int nodeNum = 0; nodeNum < markerNodeList.getLength(); nodeNum++)
-            {
+            for (int nodeNum = 0; nodeNum < markerNodeList.getLength(); nodeNum++) {
                 // getting necessary attributes
-                String field = getByXPath("@field",markerNodeList.item(nodeNum));
-                String value = getByXPath("@value",markerNodeList.item(nodeNum));
+                String field = getByXPath("@field", markerNodeList.item(nodeNum));
+                String value = getByXPath("@value", markerNodeList.item(nodeNum));
 
                 // creating a Marker object
                 Marker currentMarker = new Marker();
@@ -226,10 +224,9 @@ public class ConfigBuilder {
 
 
     // TODO: COOKIES
-    private void initCookies(){
+    private void initCookies() {
         Node CookiesRequestNode = (Node) getByXPath(XPATH_COOKIES, XPathConstants.NODE);
-        if(CookiesRequestNode != null)
-        {
+        if (CookiesRequestNode != null) {
             CookieRules cookieRules = new CookieRules();
             // setting cookie request
             String CookieRequestAddress = getByXPath("@address", CookiesRequestNode);
@@ -244,19 +241,15 @@ public class ConfigBuilder {
             Cookies cookies = new Cookies();
             cookies.mCookieRules = cookieRules;
             mConfiguration.setCookies(cookies);
-        }
-        else
-        {
+        } else {
             // trying to set hard programmed cookie
 
-            NodeList CookieNodeList = (NodeList)getByXPath(XPATH_getCookies, XPathConstants.NODESET);
-            if(CookieNodeList != null)
-            {
+            NodeList CookieNodeList = (NodeList) getByXPath(XPATH_getCookies, XPathConstants.NODESET);
+            if (CookieNodeList != null) {
                 Cookies cookies = new Cookies();
                 cookies.mCookieList = new ArrayList<>();
 
-                for(int i = 0; i<CookieNodeList.getLength();i++)
-                {
+                for (int i = 0; i < CookieNodeList.getLength(); i++) {
 
                     String Name = getByXPath("@name", CookieNodeList.item(i));
                     String Value = getByXPath("@value", CookieNodeList.item(i));
