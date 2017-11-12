@@ -1,4 +1,4 @@
-package ru.romanbrazhnikov.sourceprovider;
+package ru.romanbrazhnikov.configuration.cookies;
 
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;

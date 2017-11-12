@@ -8,7 +8,7 @@ import ru.romanbrazhnikov.repository.SimpleRepository;
 import ru.romanbrazhnikov.resultsaver.DummySaver;
 import ru.romanbrazhnikov.resultsaver.ICommonSaver;
 import ru.romanbrazhnikov.resultsaver.TextFileSaver;
-import ru.romanbrazhnikov.sourceprovider.Cookie;
+import ru.romanbrazhnikov.configuration.cookies.Cookie;
 import ru.romanbrazhnikov.sourceprovider.HttpMethods;
 import ru.romanbrazhnikov.sourceprovider.HttpSourceProvider;
 

@@ -1,6 +1,7 @@
 package ru.romanbrazhnikov.sourceprovider;
 
 import io.reactivex.Single;
+import ru.romanbrazhnikov.configuration.cookies.Cookie;
 
 import java.io.InputStream;
 import java.io.OutputStream;
