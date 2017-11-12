@@ -29,10 +29,10 @@ import java.io.StringReader;
 import java.util.ArrayList;
 
 public class ConfigBuilder {
+
     //
     // xPath constants
     //
-
     private static final String XPATH_NAME = "/Config/@name";
     private static final String XPATH_BASE_URL = "/Config/BaseUrl/@value";
     private static final String XPATH_FORMAT_URL = "/Config/FormatUrl/@value";
@@ -49,6 +49,7 @@ public class ConfigBuilder {
     private static final String XPATH_getCookies = "/Config/Cookies/Cookie";
     private static final String XPATH_FIRST_LEVEL_PATTERN = "/Config/FirstLevelPattern";
     private static final String XPATH_SECOND_LEVEL_PATTERN = "/Config/SecondLevelPattern";
+
     //
     // System fields
     //
@@ -106,6 +107,7 @@ public class ConfigBuilder {
         initPrimitives();
         initFormatParams();
         initMarkers();
+        initCookies();
     }
 
     private void initPrimitives() {
@@ -222,8 +224,6 @@ public class ConfigBuilder {
         }
     }
 
-
-    // TODO: COOKIES
     private void initCookies() {
         Node CookiesRequestNode = (Node) getByXPath(XPATH_COOKIES, XPathConstants.NODE);
         if (CookiesRequestNode != null) {
@@ -233,37 +233,40 @@ public class ConfigBuilder {
             String CookieRequestParams = getByXPath("@params", CookiesRequestNode);
             String CookieRequestMethod = getByXPath("@method", CookiesRequestNode);
 
+            if (CookieRequestAddress != null && CookieRequestParams != null && CookieRequestMethod != null) {
+                cookieRules.mRequestCookiesAddress = CookieRequestAddress;
+                cookieRules.mRequestCookiesParamString = CookieRequestParams;
+                cookieRules.mRequestCookiesMethod = CookieRequestMethod;
 
-            cookieRules.mRequestCookiesAddress = CookieRequestAddress;
-            cookieRules.mRequestCookiesParamString = CookieRequestParams;
-            cookieRules.mRequestCookiesMethod = CookieRequestMethod;
-
-            Cookies cookies = new Cookies();
-            cookies.mCookieRules = cookieRules;
-            mConfiguration.setCookies(cookies);
-        } else {
-            // trying to set hard programmed cookie
-
-            NodeList CookieNodeList = (NodeList) getByXPath(XPATH_getCookies, XPathConstants.NODESET);
-            if (CookieNodeList != null) {
                 Cookies cookies = new Cookies();
-                cookies.mCookieList = new ArrayList<>();
-
-                for (int i = 0; i < CookieNodeList.getLength(); i++) {
-
-                    String Name = getByXPath("@name", CookieNodeList.item(i));
-                    String Value = getByXPath("@value", CookieNodeList.item(i));
-                    String Domain = getByXPath("@domain", CookieNodeList.item(i));
-                    Cookie currentCookie = new Cookie(Name, Value, Domain);
-
-                    cookies.mCookieList.add(currentCookie);
-
-                }
+                cookies.mCookieRules = cookieRules;
                 mConfiguration.setCookies(cookies);
-            }
+            } else {
 
+                // trying to set custom cookies
+                NodeList CookieNodeList = (NodeList) getByXPath(XPATH_getCookies, XPathConstants.NODESET);
+                if (CookieNodeList != null) {
+                    Cookies cookies = new Cookies();
+                    cookies.mCookieList = new ArrayList<>();
+
+                    for (int i = 0; i < CookieNodeList.getLength(); i++) {
+
+                        String Name = getByXPath("@name", CookieNodeList.item(i));
+                        String Value = getByXPath("@value", CookieNodeList.item(i));
+                        String Domain = getByXPath("@domain", CookieNodeList.item(i));
+                        Cookie currentCookie = new Cookie(Name, Value, Domain);
+
+                        cookies.mCookieList.add(currentCookie);
+
+                    }
+                    mConfiguration.setCookies(cookies);
+                }
+
+            }
         }
     }
+
+
     //
     // XPATH METHODS
     //
