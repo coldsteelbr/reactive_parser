@@ -10,15 +10,20 @@ import ru.romanbrazhnikov.configuration.markers.Markers;
 import ru.romanbrazhnikov.sourceprovider.HttpMethods;
 import ru.romanbrazhnikov.utils.FileUtils;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
 import java.io.StringReader;
 
 public class Configuration {
+
+
     //
     // Config fields
     //
@@ -31,7 +36,7 @@ public class Configuration {
     private FormatParams mFormatParams;
     private int mFirstPage = 1;
     private String mMaxPagePattern;
-    private int Step = 1;
+    private int mStep = 1;
     private Cookies mCookies;
     private Markers mMarkers;
     private String mDestination;
@@ -41,64 +46,38 @@ public class Configuration {
     private DataFieldBindings mSecondLevelFieldBindings;
 
 
-    //
-    // System fields
-    //
-    private Document f_doc;
-    private XPath mXPath;
-    private String mErrorMessage;
-
-    public Configuration(){
-        mXPath = XPathFactory.newInstance().newXPath();
+    public Configuration(String name, HttpMethods method, String encodingName, int delayInMillis, String baseUrl, String formatUrl, int firstPage, String maxPagePattern, int step, String destination, String firstLevelPattern, String secondLevelPattern) {
+        mName = name;
+        mMethod = method;
+        mEncodingName = encodingName;
+        mDelayInMillis = delayInMillis < 0 ? 3334 : delayInMillis;
+        mBaseUrl = baseUrl;
+        mFormatUrl = formatUrl;
+        mFirstPage = firstPage;
+        mMaxPagePattern = maxPagePattern;
+        mStep = step < 1 ? 1 : step;
+        mDestination = destination;
+        mFirstLevelPattern = firstLevelPattern;
+        mSecondLevelPattern = secondLevelPattern;
     }
 
-    public boolean initFromXmlFile(String xmlPath){
-        String fileData;
-
-        try
-        {
-            fileData = FileUtils.readFromFileToString(xmlPath);
-        }
-        catch (IOException e)
-        {
-            mErrorMessage = e.getMessage();
-            return false;
-        }
-
-        return initFromXmlString(fileData);
+    public void setFormatParams(FormatParams formatParams) {
+        mFormatParams = formatParams;
     }
 
-    public boolean initFromXmlString(String xmlString){
-        DocumentBuilderFactory myDocFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder myDocBuilder;
-        try
-        {
-            myDocBuilder = myDocFactory.newDocumentBuilder();
-        }
-        catch (ParserConfigurationException e)
-        {
-            mErrorMessage = e.getMessage();
-            return false;
-        }
+    public void setCookies(Cookies cookies) {
+        mCookies = cookies;
+    }
 
+    public void setMarkers(Markers markers) {
+        mMarkers = markers;
+    }
 
-        try
-        {
-            f_doc = myDocBuilder.parse(new InputSource( new StringReader(xmlString)));
-        }
-        catch (SAXException e)
-        {
-            mErrorMessage = "SAXException: " + e.getMessage();
-            return false;
-        }
-        catch (IOException e)
-        {
-            mErrorMessage = "IOException: " + e.getMessage();
-            return false;
-        }
+    public void setFirstLevelFieldBindings(DataFieldBindings firstLevelFieldBindings) {
+        mFirstLevelFieldBindings = firstLevelFieldBindings;
+    }
 
-
-        // read successfully
-        return true;
+    public void setSecondLevelFieldBindings(DataFieldBindings secondLevelFieldBindings) {
+        mSecondLevelFieldBindings = secondLevelFieldBindings;
     }
 }

@@ -1,6 +1,6 @@
 package ru.romanbrazhnikov.configuration.formatparams;
 
 public class FormatParamValue {
-    private String mUrlValue;
-    private String mFieldValue;
+    public String mUrlValue;
+    public String mFieldValue;
 }

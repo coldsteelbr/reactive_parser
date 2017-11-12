@@ -2,10 +2,10 @@ package ru.romanbrazhnikov.configuration.cookies;
 
 public class CookieRules {
     /** address to request cookies */
-    private String RequestCookiesAddress;
+    public String mRequestCookiesAddress;
     /** params to request cookies  */
-    private String RequestCookiesParamString;
+    public String mRequestCookiesParamString;
     /** method to request cookies */
-    private String RequestCookiesMethod;
+    public String mRequestCookiesMethod;
 
 }
