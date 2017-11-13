@@ -1,25 +1,10 @@
 package ru.romanbrazhnikov.configuration;
 
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 import ru.romanbrazhnikov.configuration.cookies.Cookies;
 import ru.romanbrazhnikov.configuration.datafieldbindings.DataFieldBindings;
-import ru.romanbrazhnikov.configuration.formatparams.FormatParams;
+import ru.romanbrazhnikov.configuration.requestarguments.RequestArguments;
 import ru.romanbrazhnikov.configuration.markers.Markers;
 import ru.romanbrazhnikov.sourceprovider.HttpMethods;
-import ru.romanbrazhnikov.utils.FileUtils;
-
-import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-import java.io.IOException;
-import java.io.StringReader;
 
 public class Configuration {
 
@@ -33,7 +18,7 @@ public class Configuration {
     private int mDelayInMillis = 3334;
     private String mBaseUrl;
     private String mFormatUrl;
-    private FormatParams mFormatParams;
+    private RequestArguments mRequestArguments;
     private int mFirstPage = 1;
     private String mMaxPagePattern;
     private int mStep = 1;
@@ -61,8 +46,8 @@ public class Configuration {
         mSecondLevelPattern = secondLevelPattern;
     }
 
-    public void setFormatParams(FormatParams formatParams) {
-        mFormatParams = formatParams;
+    public void setRequestArguments(RequestArguments requestArguments) {
+        mRequestArguments = requestArguments;
     }
 
     public void setCookies(Cookies cookies) {

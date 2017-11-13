@@ -8,9 +8,9 @@ import org.xml.sax.SAXException;
 import ru.romanbrazhnikov.configuration.cookies.Cookie;
 import ru.romanbrazhnikov.configuration.cookies.CookieRules;
 import ru.romanbrazhnikov.configuration.cookies.Cookies;
-import ru.romanbrazhnikov.configuration.formatparams.FormatParam;
-import ru.romanbrazhnikov.configuration.formatparams.FormatParamValue;
-import ru.romanbrazhnikov.configuration.formatparams.FormatParams;
+import ru.romanbrazhnikov.configuration.requestarguments.RequestArgument;
+import ru.romanbrazhnikov.configuration.requestarguments.RequestArgumentValues;
+import ru.romanbrazhnikov.configuration.requestarguments.RequestArguments;
 import ru.romanbrazhnikov.configuration.markers.Marker;
 import ru.romanbrazhnikov.configuration.markers.Markers;
 import ru.romanbrazhnikov.sourceprovider.HttpMethods;
@@ -35,14 +35,14 @@ public class ConfigBuilder {
     //
     private static final String XPATH_NAME = "/Config/@name";
     private static final String XPATH_BASE_URL = "/Config/BaseUrl/@value";
-    private static final String XPATH_FORMAT_URL = "/Config/FormatUrl/@value";
+    private static final String XPATH_REQUEST_PARAMS = "/Config/RequestParams/@value";
+    private static final String XPATH_REQUEST_ARGUMENTS = "/Config/RequestArguments/Argument";
     private static final String XPATH_METHOD = "/Config/Method/@value";
     private static final String XPATH_ENCODING = "/Config/Encoding/@value";
     private static final String XPATH_FIRST_PAGE = "/Config/FirstPage/@value";
     private static final String XPATH_STEP = "/Config/mStep/@value";
     private static final String XPATH_DELAY = "/Config/Delay/@ms";
     private static final String XPATH_MAX_PAGE_PATTERN = "/Config/MaxPagePattern";
-    private static final String XPATH_FORMAT_PARAMS = "/Config/FormatParams/FormatParam";
     private static final String XPATH_MARKERS = "/Config/Markers/Marker";
     private static final String XPATH_DESTINATION = "/Config/Destination/@value";
     private static final String XPATH_COOKIES = "/Config/Cookies";
@@ -105,7 +105,7 @@ public class ConfigBuilder {
 
     public void init() {
         initPrimitives();
-        initFormatParams();
+        initRequestArguments();
         initMarkers();
         initCookies();
     }
@@ -113,7 +113,7 @@ public class ConfigBuilder {
     private void initPrimitives() {
         String configName = getParserAttributeAsString(XPATH_NAME);
         String baseUrl = getParserAttributeAsString(XPATH_BASE_URL);
-        String formatUrl = getParserAttributeAsString(XPATH_FORMAT_URL);
+        String formatUrl = getParserAttributeAsString(XPATH_REQUEST_PARAMS);
         String method = getParserAttributeAsString(XPATH_METHOD);
         String encoding = getParserAttributeAsString(XPATH_ENCODING);
         String firstPageAsString = getParserAttributeAsString(XPATH_FIRST_PAGE);
@@ -164,13 +164,13 @@ public class ConfigBuilder {
         );
     }
 
-    private void initFormatParams() {
-        FormatParams formatParams = new FormatParams();
-        NodeList formatParamNodeList = (NodeList) getByXPath(XPATH_FORMAT_PARAMS, XPathConstants.NODESET);
+    private void initRequestArguments() {
+        RequestArguments requestArguments = new RequestArguments();
+        NodeList formatParamNodeList = (NodeList) getByXPath(XPATH_REQUEST_ARGUMENTS, XPathConstants.NODESET);
         if (formatParamNodeList != null) {
-            // for each FormatParam
+            // for each RequestArgument
             for (int i = 0; i < formatParamNodeList.getLength(); i++) {
-                FormatParam currentFixedParam = new FormatParam();
+                RequestArgument currentFixedParam = new RequestArgument();
 
                 // getting format param attribute
                 currentFixedParam.mParamName = getByXPath("@name", formatParamNodeList.item(i));
@@ -183,19 +183,19 @@ public class ConfigBuilder {
                 currentFixedParam.mParamValueList = new ArrayList<>();
                 // ...for each value pair.
                 for (int j = 0; j < CurrentValuePairNodeList.getLength(); j++) {
-                    FormatParamValue currentValuePair = new FormatParamValue();
+                    RequestArgumentValues currentValuePair = new RequestArgumentValues();
 
-                    // getting attrs of the current FormatParamValue
-                    currentValuePair.mUrlValue = getByXPath("@urlValue", CurrentValuePairNodeList.item(j));
+                    // getting attrs of the current RequestArgumentValues
+                    currentValuePair.mArgumentValue = getByXPath("@argumentValue", CurrentValuePairNodeList.item(j));
                     currentValuePair.mFieldValue = getByXPath("@fieldValue", CurrentValuePairNodeList.item(j));
 
                     // adding current pair to the list
                     currentFixedParam.mParamValueList.add(currentValuePair);
                 }
                 // adding current fixed param to the configuration
-                formatParams.mParamList.add(currentFixedParam);
+                requestArguments.mParamList.add(currentFixedParam);
             }
-            mConfiguration.setFormatParams(formatParams);
+            mConfiguration.setRequestArguments(requestArguments);
         }
 
     }
