@@ -4,5 +4,5 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RequestArguments {
-    public List<RequestArgument> mParamList = new ArrayList<>();
+    public List<RequestArgument> mArgumentList = new ArrayList<>();
 }

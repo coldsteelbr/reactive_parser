@@ -264,7 +264,7 @@ public class Tester {
     // Configuration
     public static void testConfiguration_fullSampleConfig(){
         ConfigBuilder builder = new ConfigBuilder();
-        builder.readFromXmlFile("parser_conf.prs");
+        builder.readFromXmlFile("parser_conf_custom_cookies.prs");
         Configuration configuration = builder.init();
         System.out.println(configuration.getDebugInfo());
     }

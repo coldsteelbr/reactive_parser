@@ -24,7 +24,7 @@
 	</MaxPagePattern>
 	<Step value = "1"/>
 	
-	<Cookies address = "http://example?" params = "param=value" method = "get">
+	<Cookies>
 		<Cookie name = "PHPSESSIONID" value = "123414" domain = "example.com"/>
 		<Cookie name = "__t4" value = "21313" domain = "example.com"/>
 	</Cookies>

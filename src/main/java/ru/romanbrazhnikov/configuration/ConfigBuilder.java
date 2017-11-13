@@ -195,7 +195,7 @@ public class ConfigBuilder {
                     currentFixedParam.mParamValueList.add(currentValuePair);
                 }
                 // adding current fixed param to the configuration
-                requestArguments.mParamList.add(currentFixedParam);
+                requestArguments.mArgumentList.add(currentFixedParam);
             }
             mConfiguration.setRequestArguments(requestArguments);
         }
@@ -235,7 +235,9 @@ public class ConfigBuilder {
             String CookieRequestParams = getByXPath("@params", CookiesRequestNode);
             String CookieRequestMethod = getByXPath("@method", CookiesRequestNode);
 
-            if (CookieRequestAddress != null && CookieRequestParams != null && CookieRequestMethod != null) {
+            if (!CookieRequestAddress.isEmpty() &&
+                !CookieRequestParams.isEmpty() &&
+                !CookieRequestMethod.isEmpty()) {
                 cookieRules.mRequestCookiesAddress = CookieRequestAddress;
                 cookieRules.mRequestCookiesParamString = CookieRequestParams;
                 cookieRules.mRequestCookiesMethod = CookieRequestMethod;

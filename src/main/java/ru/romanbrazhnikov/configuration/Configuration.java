@@ -1,8 +1,11 @@
 package ru.romanbrazhnikov.configuration;
 
+import ru.romanbrazhnikov.configuration.cookies.Cookie;
 import ru.romanbrazhnikov.configuration.cookies.Cookies;
 import ru.romanbrazhnikov.configuration.datafieldbindings.DataFieldBindings;
 import ru.romanbrazhnikov.configuration.markers.Markers;
+import ru.romanbrazhnikov.configuration.requestarguments.RequestArgument;
+import ru.romanbrazhnikov.configuration.requestarguments.RequestArgumentValues;
 import ru.romanbrazhnikov.configuration.requestarguments.RequestArguments;
 import ru.romanbrazhnikov.sourceprovider.HttpMethods;
 
@@ -75,11 +78,40 @@ public class Configuration {
         builder.append("Delay: ").append(mDelayInMillis).append("\n");
         builder.append("Base Url: ").append(mBaseUrl).append("\n");
         builder.append("Format Url:").append(mFormatUrl).append("\n");
-        builder.append("Request arguments: ").append(mRequestArguments).append("\n");
+
+        builder.append("Request arguments: ").append("\n");
+        if (mRequestArguments != null) {
+            for (RequestArgument curArg : mRequestArguments.mArgumentList) {
+                builder.append("- Arg(")
+                        .append(curArg.mParamName).append(":")
+                        .append(curArg.mField).append(")").append("\n");
+                for(RequestArgumentValues curValues:curArg.mParamValueList){
+                    builder.append("-- Value: ").append(curValues.mArgumentValue)
+                            .append("; Field: ").append(curValues.mFieldValue).append("\n");
+                }
+            }
+        }
+
         builder.append("First page: ").append(mFirstPage).append("\n");
         builder.append("Max page pattern: ").append(mMaxPagePattern).append("\n");
         builder.append("Step: ").append(mStep).append("\n");
-        builder.append("Cookies: ").append(mCookies).append("\n");
+
+        builder.append("Cookies: ").append("\n");
+        if(mCookies != null){
+            if(mCookies.mCookieRules != null){
+                builder.append("- Cookie rules:\n");
+                builder.append("-- ").append(mCookies.mCookieRules.mRequestCookiesAddress).append("\n");
+                builder.append("-- ").append(mCookies.mCookieRules.mRequestCookiesMethod).append("\n");
+                builder.append("-- ").append(mCookies.mCookieRules.mRequestCookiesParamString).append("\n");
+            }
+            if(mCookies.mCookieList != null){
+                builder.append("- Custom cookies:\n");
+                for(Cookie curCookie : mCookies.mCookieList){
+                    builder.append(curCookie.getHeader()).append("\n");
+                }
+            }
+        }
+
         builder.append("Markers: ").append(mMarkers).append("\n");
         builder.append("Destination: ").append(mDestination).append("\n");
         builder.append("First Level Pattern: ").append(mFirstLevelPattern).append("\n");
