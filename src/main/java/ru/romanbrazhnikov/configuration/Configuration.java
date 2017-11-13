@@ -123,8 +123,8 @@ public class Configuration {
         }
 
         builder.append("Destination: ").append(mDestination).append("\n");
-        builder.append("First Level Pattern: ").append(mFirstLevelPattern).append("\n");
-        builder.append("Second level pattern: ").append(mSecondLevelPattern).append("\n");
+        builder.append("First Level Pattern:\n").append(mFirstLevelPattern).append("\n");
+        builder.append("Second level pattern:\n").append(mSecondLevelPattern).append("\n");
 
         builder.append("1L field bindings: ").append("\n");
         if(mFirstLevelFieldBindings != null){
