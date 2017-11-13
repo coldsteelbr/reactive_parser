@@ -1,5 +1,8 @@
 package ru.romanbrazhnikov.configuration.datafieldbindings;
 
-public class DataFieldBindings {
+import java.util.ArrayList;
+import java.util.List;
 
+public class DataFieldBindings {
+    public List<DataFieldBinding> mBindings = new ArrayList<>();
 }

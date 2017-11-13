@@ -4,5 +4,5 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Markers {
-    public List<Marker> mMarkers = new ArrayList<>();
+    public List<Marker> mMarkerList = new ArrayList<>();
 }

@@ -3,6 +3,7 @@ package ru.romanbrazhnikov.configuration;
 import ru.romanbrazhnikov.configuration.cookies.Cookie;
 import ru.romanbrazhnikov.configuration.cookies.Cookies;
 import ru.romanbrazhnikov.configuration.datafieldbindings.DataFieldBindings;
+import ru.romanbrazhnikov.configuration.markers.Marker;
 import ru.romanbrazhnikov.configuration.markers.Markers;
 import ru.romanbrazhnikov.configuration.requestarguments.RequestArgument;
 import ru.romanbrazhnikov.configuration.requestarguments.RequestArgumentValues;
@@ -112,7 +113,13 @@ public class Configuration {
             }
         }
 
-        builder.append("Markers: ").append(mMarkers).append("\n");
+        builder.append("Markers: ").append("\n");
+        if(mMarkers != null){
+            for(Marker curMarker : mMarkers.mMarkerList){
+                builder.append("- Field: ").append(curMarker.mField).append("; ");
+                builder.append("Value: ").append(curMarker.mValue).append("\n");
+            }
+        }
         builder.append("Destination: ").append(mDestination).append("\n");
         builder.append("First Level Pattern: ").append(mFirstLevelPattern).append("\n");
         builder.append("Second level pattern: ").append(mSecondLevelPattern).append("\n");

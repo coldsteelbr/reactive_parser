@@ -8,6 +8,8 @@ import org.xml.sax.SAXException;
 import ru.romanbrazhnikov.configuration.cookies.Cookie;
 import ru.romanbrazhnikov.configuration.cookies.CookieRules;
 import ru.romanbrazhnikov.configuration.cookies.Cookies;
+import ru.romanbrazhnikov.configuration.datafieldbindings.DataFieldBinding;
+import ru.romanbrazhnikov.configuration.datafieldbindings.DataFieldBindings;
 import ru.romanbrazhnikov.configuration.markers.Marker;
 import ru.romanbrazhnikov.configuration.markers.Markers;
 import ru.romanbrazhnikov.configuration.requestarguments.RequestArgument;
@@ -46,10 +48,11 @@ public class ConfigBuilder {
     private static final String XPATH_MARKERS = "/Config/Markers/Marker";
     private static final String XPATH_DESTINATION = "/Config/Destination/@value";
     private static final String XPATH_COOKIES = "/Config/Cookies";
-    private static final String XPATH_getCookies = "/Config/Cookies/Cookie";
+    private static final String XPATH_CUSTOM_COOKIE_LIST = "/Config/Cookies/Cookie";
     private static final String XPATH_FIRST_LEVEL_PATTERN = "/Config/FirstLevelPattern";
     private static final String XPATH_SECOND_LEVEL_PATTERN = "/Config/SecondLevelPattern";
-
+    private static final String XPATH_FIRST_LEVEL_BINDINGS = "/Config/FirstLevelBindings/Binding";
+    private static final String XPATH_SECOND_LEVEL_BINDINGS = "/Config/SecondLevelBindings/Binding";
     //
     // System fields
     //
@@ -104,10 +107,15 @@ public class ConfigBuilder {
     }
 
     public Configuration init() {
+        int firstLevel = 1;
+        int secondLevel = 2;
+
         initPrimitives();
         initRequestArguments();
         initMarkers();
         initCookies();
+        initDataFieldBinding(firstLevel);
+        initDataFieldBinding(secondLevel);
 
         return mConfiguration;
     }
@@ -218,7 +226,7 @@ public class ConfigBuilder {
                 currentMarker.mValue = value;
 
                 // appending the currentMarker to the markerNodeList
-                markers.mMarkers.add(currentMarker);
+                markers.mMarkerList.add(currentMarker);
 
             }
 
@@ -236,8 +244,8 @@ public class ConfigBuilder {
             String CookieRequestMethod = getByXPath("@method", CookiesRequestNode);
 
             if (!CookieRequestAddress.isEmpty() &&
-                !CookieRequestParams.isEmpty() &&
-                !CookieRequestMethod.isEmpty()) {
+                    !CookieRequestParams.isEmpty() &&
+                    !CookieRequestMethod.isEmpty()) {
                 cookieRules.mRequestCookiesAddress = CookieRequestAddress;
                 cookieRules.mRequestCookiesParamString = CookieRequestParams;
                 cookieRules.mRequestCookiesMethod = CookieRequestMethod;
@@ -248,7 +256,7 @@ public class ConfigBuilder {
             } else {
 
                 // trying to set custom cookies
-                NodeList CookieNodeList = (NodeList) getByXPath(XPATH_getCookies, XPathConstants.NODESET);
+                NodeList CookieNodeList = (NodeList) getByXPath(XPATH_CUSTOM_COOKIE_LIST, XPathConstants.NODESET);
                 if (CookieNodeList != null) {
                     Cookies cookies = new Cookies();
                     cookies.mCookieList = new ArrayList<>();
@@ -270,6 +278,46 @@ public class ConfigBuilder {
         }
     }
 
+    private void initDataFieldBinding(int lvl) {
+        String xpathLevelBindings;
+        switch (lvl) {
+            case 1:
+                xpathLevelBindings = XPATH_FIRST_LEVEL_BINDINGS;
+                break;
+            case 2:
+                xpathLevelBindings = XPATH_SECOND_LEVEL_BINDINGS;
+                break;
+            default:
+                mErrorMessage = "Unknown level code for binding";
+                return;
+        }
+
+        NodeList bindingsNodeList = (NodeList) getByXPath(xpathLevelBindings, XPathConstants.NODESET);
+        if (bindingsNodeList != null) {
+
+            DataFieldBindings bindings = new DataFieldBindings();
+            for (int i = 0; i < bindingsNodeList.getLength(); i++) {
+                DataFieldBinding currentBinding = new DataFieldBinding();
+
+                currentBinding.mDataName = getByXPath("@dataName", bindingsNodeList.item(i));
+                currentBinding.mFieldName = getByXPath("@fieldName", bindingsNodeList.item(i));
+
+                bindings.mBindings.add(currentBinding);
+            }
+
+            switch (lvl) {
+                case 1:
+                    mConfiguration.setFirstLevelFieldBindings(bindings);
+                    break;
+                case 2:
+                    mConfiguration.setSecondLevelFieldBindings(bindings);
+                    break;
+                default:
+                    mErrorMessage = "Unknown level code for binding";
+                    return;
+            }
+        }
+    }
 
     //
     // XPATH METHODS
