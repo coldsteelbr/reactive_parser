@@ -2,8 +2,8 @@ package ru.romanbrazhnikov.configuration;
 
 import ru.romanbrazhnikov.configuration.cookies.Cookies;
 import ru.romanbrazhnikov.configuration.datafieldbindings.DataFieldBindings;
-import ru.romanbrazhnikov.configuration.requestarguments.RequestArguments;
 import ru.romanbrazhnikov.configuration.markers.Markers;
+import ru.romanbrazhnikov.configuration.requestarguments.RequestArguments;
 import ru.romanbrazhnikov.sourceprovider.HttpMethods;
 
 public class Configuration {
@@ -64,5 +64,29 @@ public class Configuration {
 
     public void setSecondLevelFieldBindings(DataFieldBindings secondLevelFieldBindings) {
         mSecondLevelFieldBindings = secondLevelFieldBindings;
+    }
+
+    public String getDebugInfo() {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("Name: ").append(mName).append("\n");
+        builder.append("Method: ").append(mMethod).append("\n");
+        builder.append("Encoding: ").append(mEncodingName).append("\n");
+        builder.append("Delay: ").append(mDelayInMillis).append("\n");
+        builder.append("Base Url: ").append(mBaseUrl).append("\n");
+        builder.append("Format Url:").append(mFormatUrl).append("\n");
+        builder.append("Request arguments: ").append(mRequestArguments).append("\n");
+        builder.append("First page: ").append(mFirstPage).append("\n");
+        builder.append("Max page pattern: ").append(mMaxPagePattern).append("\n");
+        builder.append("Step: ").append(mStep).append("\n");
+        builder.append("Cookies: ").append(mCookies).append("\n");
+        builder.append("Markers: ").append(mMarkers).append("\n");
+        builder.append("Destination: ").append(mDestination).append("\n");
+        builder.append("First Level Pattern: ").append(mFirstLevelPattern).append("\n");
+        builder.append("Second level pattern: ").append(mSecondLevelPattern).append("\n");
+        builder.append("1L field bindings: ").append(mFirstLevelFieldBindings).append("\n");
+        builder.append("2L field bindings: ").append(mSecondLevelFieldBindings).append("\n");
+
+        return builder.toString();
     }
 }

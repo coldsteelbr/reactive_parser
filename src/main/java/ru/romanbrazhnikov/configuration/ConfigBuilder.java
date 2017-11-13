@@ -103,11 +103,13 @@ public class ConfigBuilder {
         return true;
     }
 
-    public void init() {
+    public Configuration init() {
         initPrimitives();
         initRequestArguments();
         initMarkers();
         initCookies();
+
+        return mConfiguration;
     }
 
     private void initPrimitives() {
@@ -121,8 +123,8 @@ public class ConfigBuilder {
         String delay = getByXPath(XPATH_DELAY_MS);
         String maxPagePattern = getByXPath(XPATH_MAX_PAGE_PATTERN).trim();
         String destination = getParserAttributeAsString(XPATH_DESTINATION);
-        String firstLevelPattern = getByXPath(XPATH_FIRST_LEVEL_PATTERN);
-        String secondLevelPattern = getByXPath(XPATH_SECOND_LEVEL_PATTERN);
+        String firstLevelPattern = getByXPath(XPATH_FIRST_LEVEL_PATTERN).trim();
+        String secondLevelPattern = getByXPath(XPATH_SECOND_LEVEL_PATTERN).trim();
 
 
         HttpMethods httpMethod = HttpMethods.GET;

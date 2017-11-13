@@ -1,5 +1,7 @@
 package ru.romanbrazhnikov;
 
+import ru.romanbrazhnikov.configuration.ConfigBuilder;
+import ru.romanbrazhnikov.configuration.Configuration;
 import ru.romanbrazhnikov.parser.ICommonParser;
 import ru.romanbrazhnikov.parser.ParseResult;
 import ru.romanbrazhnikov.parser.RegExParser;
@@ -259,6 +261,13 @@ public class Tester {
 
     }
 
+    // Configuration
+    public static void testConfiguration_fullSampleConfig(){
+        ConfigBuilder builder = new ConfigBuilder();
+        builder.readFromXmlFile("parser_conf.prs");
+        Configuration configuration = builder.init();
+        System.out.println(configuration.getDebugInfo());
+    }
 
     // Cookie
     public static void testCookie(){

@@ -1,0 +1,65 @@
+<Config name = "universal">
+	<Delay ms = "500"/>
+	<Method value = "GET"/>
+	<Encoding value = "UTF-8"/>
+	<BaseUrl value = "http://my.example.com" delimiter = "?"/>
+	<RequestParams value = "param_one={[param_1]}&amp;param_two={[param_2]}&amp;page={[page]}"/>
+	
+	<RequestArguments>
+		<Argument name = "param_1" field = "field one">
+			<Values argumentValue = "1" fieldValue = "real one"/>
+			<Values argumentValue = "2" fieldValue = "real two"/>
+			<Values argumentValue = "3" fieldValue = "real three"/>
+		</Argument>
+		<Argument name = "param_2" field = "field two">
+			<Values argumentValue = "10" fieldValue = "ten"/>
+			<Values argumentValue = "20" fieldValue = "twenty"/>
+		</Argument>
+	</RequestArguments>
+	
+	<FirstPage value = "1"/>
+	<MaxPagePattern>
+	    <![CDATA[
+            page\s*=\s*(?<PAGENUM>[0-9]+?)">\s*[0-9]+\s*<
+        ]]>
+	</MaxPagePattern>
+	<Step value = "1"/>
+	
+	<Cookies address = "http://example?" params = "param=value" method = "get">
+		<Cookie name = "PHPSESSIONID" value = "123414" domain = "example.com"/>
+		<Cookie name = "__t4" value = "21313" domain = "example.com"/>
+	</Cookies>
+	
+	<Markers>
+		<Marker field = "field three" value = "val 3"/>
+		<Marker field = "field four" value = "val 4"/>
+	</Markers>
+	
+	<Destination value = "tbl_to_save"/>
+	
+    <FirstLevelPattern>
+        <![CDATA[
+            <tr[^>]*>\s*
+            <td[^>]*>\s*<img[^>]*>\s*(?<TYPE>.*?)\s*</td>\s*
+            <td[^>]*>\s*<div[^>]*>\s*<a\s*href\s*=\s*"(?<SECONDLEVEL>.*?)"[^>]*>\s*
+            <td[^>]*>\s*(?<SQUARE>.*?)\s*</td>\s*
+            <td[^>]*>\s*<div[^>]*>\s*(?<TOTALPRICE>.*?)\s*</div>\s*
+            </tr>\s*
+        ]]>
+    </FirstLevelPattern>
+    <FirstLevelBindings>
+        <Binding dataName = "TYPE"          fieldName = "type"/>
+        <Binding dataName = "SQUARE"        fieldName = "square"/>
+        <Binding dataName = "TOTALPRICE"    fieldName = "price"/>
+    </FirstLevelBindings>
+
+    <SecondLevelPattern>
+        <![CDATA[
+            <h2[^>]*>\s*notes\s*from\s*the\s*seller\s*</h2>\s*
+            <div[^>]*>\s*(?<NOTES>.*?)\s*</div>
+        ]]>
+    </SecondLevelPattern>
+    <SecondLevelBindings>
+        <Binding dataName = "NOTES"          fieldName = "notes"/>
+    </SecondLevelBindings>	
+</Config>

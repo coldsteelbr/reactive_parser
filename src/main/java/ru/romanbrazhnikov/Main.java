@@ -32,8 +32,10 @@ public class Main {
         // TODO: find "post" site
         //Tester.testHttpSourceProvider_httpPostRequest();
 
-        Tester.testCookie();
-        Tester.testHttpSourceProvider_settingCookieHeaders();
+        //Tester.testCookie();
+        //Tester.testHttpSourceProvider_settingCookieHeaders();
+
+        Tester.testConfiguration_fullSampleConfig();
     }
 
     private static void startIncubator() {
