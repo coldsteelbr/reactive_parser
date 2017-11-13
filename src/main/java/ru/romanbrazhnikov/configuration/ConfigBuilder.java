@@ -8,11 +8,11 @@ import org.xml.sax.SAXException;
 import ru.romanbrazhnikov.configuration.cookies.Cookie;
 import ru.romanbrazhnikov.configuration.cookies.CookieRules;
 import ru.romanbrazhnikov.configuration.cookies.Cookies;
+import ru.romanbrazhnikov.configuration.markers.Marker;
+import ru.romanbrazhnikov.configuration.markers.Markers;
 import ru.romanbrazhnikov.configuration.requestarguments.RequestArgument;
 import ru.romanbrazhnikov.configuration.requestarguments.RequestArgumentValues;
 import ru.romanbrazhnikov.configuration.requestarguments.RequestArguments;
-import ru.romanbrazhnikov.configuration.markers.Marker;
-import ru.romanbrazhnikov.configuration.markers.Markers;
 import ru.romanbrazhnikov.sourceprovider.HttpMethods;
 import ru.romanbrazhnikov.utils.FileUtils;
 
@@ -41,7 +41,7 @@ public class ConfigBuilder {
     private static final String XPATH_ENCODING = "/Config/Encoding/@value";
     private static final String XPATH_FIRST_PAGE = "/Config/FirstPage/@value";
     private static final String XPATH_STEP = "/Config/mStep/@value";
-    private static final String XPATH_DELAY = "/Config/Delay/@ms";
+    private static final String XPATH_DELAY_MS = "/Config/Delay/@ms";
     private static final String XPATH_MAX_PAGE_PATTERN = "/Config/MaxPagePattern";
     private static final String XPATH_MARKERS = "/Config/Markers/Marker";
     private static final String XPATH_DESTINATION = "/Config/Destination/@value";
@@ -118,7 +118,7 @@ public class ConfigBuilder {
         String encoding = getParserAttributeAsString(XPATH_ENCODING);
         String firstPageAsString = getParserAttributeAsString(XPATH_FIRST_PAGE);
         String stepAsString = getParserAttributeAsString(XPATH_STEP);
-        String delay = getByXPath(XPATH_DELAY);
+        String delay = getByXPath(XPATH_DELAY_MS);
         String maxPagePattern = getByXPath(XPATH_MAX_PAGE_PATTERN).trim();
         String destination = getParserAttributeAsString(XPATH_DESTINATION);
         String firstLevelPattern = getByXPath(XPATH_FIRST_LEVEL_PATTERN);
