@@ -2,6 +2,7 @@ package ru.romanbrazhnikov.configuration;
 
 import ru.romanbrazhnikov.configuration.cookies.Cookie;
 import ru.romanbrazhnikov.configuration.cookies.Cookies;
+import ru.romanbrazhnikov.configuration.datafieldbindings.DataFieldBinding;
 import ru.romanbrazhnikov.configuration.datafieldbindings.DataFieldBindings;
 import ru.romanbrazhnikov.configuration.markers.Marker;
 import ru.romanbrazhnikov.configuration.markers.Markers;
@@ -120,11 +121,24 @@ public class Configuration {
                 builder.append("Value: ").append(curMarker.mValue).append("\n");
             }
         }
+
         builder.append("Destination: ").append(mDestination).append("\n");
         builder.append("First Level Pattern: ").append(mFirstLevelPattern).append("\n");
         builder.append("Second level pattern: ").append(mSecondLevelPattern).append("\n");
-        builder.append("1L field bindings: ").append(mFirstLevelFieldBindings).append("\n");
-        builder.append("2L field bindings: ").append(mSecondLevelFieldBindings).append("\n");
+
+        builder.append("1L field bindings: ").append("\n");
+        if(mFirstLevelFieldBindings != null){
+            for(DataFieldBinding curBinding : mFirstLevelFieldBindings.mBindings){
+                builder.append("- ").append(curBinding.mDataName).append(":").append(curBinding.mFieldName).append("\n");
+            }
+        }
+
+        builder.append("2L field bindings: ").append("\n");
+        if(mSecondLevelFieldBindings != null){
+            for(DataFieldBinding curBinding : mSecondLevelFieldBindings.mBindings){
+                builder.append("- ").append(curBinding.mDataName).append(":").append(curBinding.mFieldName).append("\n");
+            }
+        }
 
         return builder.toString();
     }
