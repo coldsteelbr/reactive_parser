@@ -30,6 +30,15 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 
+
+/**
+ *  Sample usage:
+ *
+ *      ConfigBuilder builder = new ConfigBuilder();
+ *      builder.readFromXmlFile("parser_conf_custom_cookies.prs");
+ *      Configuration configuration = builder.init();
+ *      System.out.println(configuration.getDebugInfo());
+ * */
 public class ConfigBuilder {
 
     //
@@ -37,6 +46,7 @@ public class ConfigBuilder {
     //
     private static final String XPATH_NAME = "/Config/@name";
     private static final String XPATH_BASE_URL = "/Config/BaseUrl/@value";
+    private static final String XPATH_BASE_URL_DELIMITER = "/Config/BaseUrl/@delimiter";
     private static final String XPATH_REQUEST_PARAMS = "/Config/RequestParams/@value";
     private static final String XPATH_REQUEST_ARGUMENTS = "/Config/RequestArguments/Argument";
     private static final String XPATH_METHOD = "/Config/Method/@value";
@@ -123,6 +133,7 @@ public class ConfigBuilder {
     private void initPrimitives() {
         String configName = getParserAttributeAsString(XPATH_NAME);
         String baseUrl = getParserAttributeAsString(XPATH_BASE_URL);
+        String baseUrlDelimiter = getParserAttributeAsString(XPATH_BASE_URL_DELIMITER);
         String formatUrl = getParserAttributeAsString(XPATH_REQUEST_PARAMS);
         String method = getParserAttributeAsString(XPATH_METHOD);
         String encoding = getParserAttributeAsString(XPATH_ENCODING);
@@ -164,6 +175,7 @@ public class ConfigBuilder {
                 encoding,
                 delayInMillis,
                 baseUrl,
+                baseUrlDelimiter,
                 formatUrl,
                 firstPage,
                 maxPagePattern,

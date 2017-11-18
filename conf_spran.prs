@@ -1,0 +1,45 @@
+<Config name = "Spran Comm Sale">
+	<Delay ms = "500"/>
+	<Method value = "GET"/>
+	<Encoding value = "UTF-8"/>
+	<BaseUrl value = "http://spran.ru/sell/comm.html" delimiter = "?"/>
+	<RequestParams value = "cities%5B0%5D=21&amp;page={[page]}"/>
+
+	<FirstPage value = "1"/>
+	<MaxPagePattern>
+	    <![CDATA[
+            page\s*=\s*(?<PAGENUM>[0-9]+?)">\s*[0-9]+\s*<
+        ]]>
+	</MaxPagePattern>
+	<Step value = "1"/>
+	
+	<Cookies address = "http://spran.ru/sell/comm.html?" params = "cities%5B0%5D=21" method = "get" />
+
+	<Destination value = "screen"/>
+	
+    <FirstLevelPattern>
+        <![CDATA[
+            <tr[^>]*>\s*
+            <td[^>]*>\s*<img[^>]*>\s*(?<TYPE>.*?)\s*</td>\s*
+            <td[^>]*>\s*<div[^>]*>\s*<a\s*href\s*=\s*"(?<SECONDLEVEL>.*?)"[^>]*>\s*
+            <td[^>]*>\s*(?<SQUARE>.*?)\s*</td>\s*
+            <td[^>]*>\s*<div[^>]*>\s*(?<TOTALPRICE>.*?)\s*</div>\s*
+            </tr>\s*
+        ]]>
+    </FirstLevelPattern>
+    <FirstLevelBindings>
+        <Binding dataName = "TYPE"          fieldName = "type"/>
+        <Binding dataName = "SQUARE"        fieldName = "square"/>
+        <Binding dataName = "TOTALPRICE"    fieldName = "price"/>
+    </FirstLevelBindings>
+
+    <SecondLevelPattern>
+        <![CDATA[
+            <h2[^>]*>\s*notes\s*from\s*the\s*seller\s*</h2>\s*
+            <div[^>]*>\s*(?<NOTES>.*?)\s*</div>
+        ]]>
+    </SecondLevelPattern>
+    <SecondLevelBindings>
+        <Binding dataName = "NOTES"          fieldName = "notes"/>
+    </SecondLevelBindings>	
+</Config>

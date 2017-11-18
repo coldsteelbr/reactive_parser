@@ -277,6 +277,22 @@ public class Tester {
     }
 
     //
+    // One config working
+    //
+    /** Connects to a site by using an xml config, and printing parsing results on screen
+     * */
+    public static void testComplexConfig_OneThreadParser(){
+        // Read config
+        ConfigBuilder configBuilder = new ConfigBuilder();
+        configBuilder.readFromXmlFile("conf_spran.prs");
+        Configuration configuration = configBuilder.init();
+        System.out.println(configuration.getDebugInfo());
+
+        configuration.start();
+    }
+
+
+    //
     public static void testComplexParser() {
         String pattern = "<td[^>]*>\\s*(?<LEFT>.*?)\\s*</td>\\s*"
                 + "<td[^>]*>\\s*(?<RIGHT>.*?)\\s*</td>\\s*";
@@ -305,5 +321,6 @@ public class Tester {
 
         }
     }
+
 
 }

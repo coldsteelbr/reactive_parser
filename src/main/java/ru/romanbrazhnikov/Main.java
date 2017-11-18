@@ -35,7 +35,12 @@ public class Main {
         //Tester.testCookie();
         //Tester.testHttpSourceProvider_settingCookieHeaders();
 
-        Tester.testConfiguration_fullSampleConfig();
+        //Tester.testConfiguration_fullSampleConfig();
+
+        //
+        // TESTING complex
+        //
+        Tester.testComplexConfig_OneThreadParser();
     }
 
     private static void startIncubator() {

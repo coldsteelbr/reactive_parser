@@ -9,7 +9,11 @@ import ru.romanbrazhnikov.configuration.markers.Markers;
 import ru.romanbrazhnikov.configuration.requestarguments.RequestArgument;
 import ru.romanbrazhnikov.configuration.requestarguments.RequestArgumentValues;
 import ru.romanbrazhnikov.configuration.requestarguments.RequestArguments;
+import ru.romanbrazhnikov.parser.ICommonParser;
 import ru.romanbrazhnikov.sourceprovider.HttpMethods;
+import ru.romanbrazhnikov.sourceprovider.HttpSourceProvider;
+
+import java.util.Queue;
 
 public class Configuration {
 
@@ -22,6 +26,7 @@ public class Configuration {
     private String mEncodingName = "UTF-8";
     private int mDelayInMillis = 3334;
     private String mBaseUrl;
+    private String mBaseUrlDelimiter;
     private String mFormatUrl;
     private RequestArguments mRequestArguments;
     private int mFirstPage = 1;
@@ -36,12 +41,14 @@ public class Configuration {
     private DataFieldBindings mSecondLevelFieldBindings;
 
 
-    public Configuration(String name, HttpMethods method, String encodingName, int delayInMillis, String baseUrl, String formatUrl, int firstPage, String maxPagePattern, int step, String destination, String firstLevelPattern, String secondLevelPattern) {
+
+    public Configuration(String name, HttpMethods method, String encodingName, int delayInMillis, String baseUrl, String baseUrlDelimiter, String formatUrl, int firstPage, String maxPagePattern, int step, String destination, String firstLevelPattern, String secondLevelPattern) {
         mName = name;
         mMethod = method;
         mEncodingName = encodingName;
         mDelayInMillis = delayInMillis < 0 ? 3334 : delayInMillis;
         mBaseUrl = baseUrl;
+        mBaseUrlDelimiter = baseUrlDelimiter;
         mFormatUrl = formatUrl;
         mFirstPage = firstPage;
         mMaxPagePattern = maxPagePattern;
@@ -79,6 +86,7 @@ public class Configuration {
         builder.append("Encoding: ").append(mEncodingName).append("\n");
         builder.append("Delay: ").append(mDelayInMillis).append("\n");
         builder.append("Base Url: ").append(mBaseUrl).append("\n");
+        builder.append("- delimiter: ").append(mBaseUrlDelimiter).append("\n");
         builder.append("Format Url:").append(mFormatUrl).append("\n");
 
         builder.append("Request arguments: ").append("\n");
@@ -141,5 +149,15 @@ public class Configuration {
         }
 
         return builder.toString();
+    }
+
+    public void start(){
+        // connect and get first page. get first link
+        HttpSourceProvider provider =
+                new HttpSourceProvider(mBaseUrl + mBaseUrlDelimiter,
+                        "utf8", HttpMethods.GET,
+                        mFormatUrl.replace("{[page]}", "1"));
+
+        provider.requestSource().subscribe(System.out::println,Throwable::printStackTrace);
     }
 }
